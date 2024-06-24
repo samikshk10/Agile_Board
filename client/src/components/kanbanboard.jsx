@@ -7,13 +7,12 @@ import { baseUrl } from './baseUrl';
 
 const KanbanBoard = () => {
     const [columns, setColumns] = useState({
-        'column-1': { id: 'column-1', title: 'To Do', taskIds: [] },
-        'column-2': { id: 'column-2', title: 'In Progress', taskIds: [] },
-        'column-3': { id: 'column-3', title: 'Done', taskIds: [] },
+        'column-1': { id: 'column-1', title: 'To Do', taskData: [] },
+        'column-2': { id: 'column-2', title: 'In Progress', taskData: [] },
+        'column-3': { id: 'column-3', title: 'Done', taskData: [] },
     });
 
     useEffect(() => {
-        console.log('jere');
         fetchData();
     }, []);
 
@@ -21,14 +20,17 @@ const KanbanBoard = () => {
         try {
             const response = await axios.get(`${baseUrl}/api/get-task`);
             const tasks = response.data;
+
             const newColumns = {
-                'column-1': { ...columns['column-1'], taskIds: [] },
-                'column-2': { ...columns['column-2'], taskIds: [] },
-                'column-3': { ...columns['column-3'], taskIds: [] },
+                'column-1': { ...columns['column-1'], taskData: [] },
+                'column-2': { ...columns['column-2'], taskData: [] },
+                'column-3': { ...columns['column-3'], taskData: [] },
             };
 
             tasks.forEach((task) => {
-                newColumns[task.columnId].taskIds.push(task._id);
+                if (newColumns[task.columnId]) {
+                    newColumns[task.columnId].taskData.push(task);
+                }
             });
 
             setColumns(newColumns);
@@ -42,30 +44,26 @@ const KanbanBoard = () => {
 
         if (!destination) return;
 
-        if (
-            destination.droppableId === source.droppableId &&
-            destination.index === source.index
-        )
-            return;
+        if (destination.droppableId === source.droppableId && destination.index === source.index) return;
 
         const sourceColumn = columns[source.droppableId];
         const destinationColumn = columns[destination.droppableId];
 
-        const newSourceTaskIds = Array.from(sourceColumn.taskIds);
-        newSourceTaskIds.splice(source.index, 1);
+        const newSourceTaskData = Array.from(sourceColumn.taskData);
+        const [removed] = newSourceTaskData.splice(source.index, 1);
 
-        const newDestinationTaskIds = Array.from(destinationColumn.taskIds);
-        newDestinationTaskIds.splice(destination.index, 0, draggableId);
+        const newDestinationTaskData = Array.from(destinationColumn.taskData);
+        newDestinationTaskData.splice(destination.index, 0, removed);
 
         const newColumns = {
             ...columns,
             [source.droppableId]: {
                 ...sourceColumn,
-                taskIds: newSourceTaskIds,
+                taskData: newSourceTaskData,
             },
             [destination.droppableId]: {
                 ...destinationColumn,
-                taskIds: newDestinationTaskIds,
+                taskData: newDestinationTaskData,
             },
         };
 
@@ -83,17 +81,36 @@ const KanbanBoard = () => {
     const addTask = async (content, columnId) => {
         try {
             const response = await axios.post(`${baseUrl}/api/addtask`, { content, columnId });
-            const newTaskId = response.data._id;
-            const newColumns = {
-                ...columns,
+            const newTask = response.data;
+
+            setColumns(prevColumns => ({
+                ...prevColumns,
                 [columnId]: {
-                    ...columns[columnId],
-                    taskIds: [...columns[columnId].taskIds, newTaskId],
+                    ...prevColumns[columnId],
+                    taskData: [...prevColumns[columnId].taskData, newTask],
                 },
-            };
-            setColumns(newColumns);
+            }));
         } catch (error) {
             console.error('Error adding task:', error);
+        }
+    };
+
+    const deleteTask = async (taskId, columnId) => {
+        try {
+            await axios.delete(`${baseUrl}/api/delete-task/${taskId}`);
+
+            setColumns(prevColumns => {
+                const newTaskData = prevColumns[columnId]?.taskData.filter(task => task._id !== taskId);
+                return {
+                    ...prevColumns,
+                    [columnId]: {
+                        ...prevColumns[columnId],
+                        taskData: newTaskData,
+                    },
+                };
+            });
+        } catch (error) {
+            console.error('Error deleting task:', error);
         }
     };
 
@@ -101,7 +118,7 @@ const KanbanBoard = () => {
         <DragDropContext onDragEnd={onDragEnd}>
             <div className="flex justify-center p-8">
                 {Object.values(columns).map((column) => (
-                    <Column key={column.id} column={column} />
+                    <Column key={column.id} column={column} deleteTask={deleteTask} />
                 ))}
             </div>
             <TaskForm addTask={addTask} />

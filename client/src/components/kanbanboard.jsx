@@ -115,14 +115,16 @@ const KanbanBoard = () => {
     };
 
     return (
-        <DragDropContext onDragEnd={onDragEnd}>
-            <div className="flex justify-center p-8">
-                {Object.values(columns).map((column) => (
-                    <Column key={column.id} column={column} deleteTask={deleteTask} />
-                ))}
-            </div>
-            <TaskForm addTask={addTask} />
-        </DragDropContext>
+        <div className="flex flex-col  justify-center ">
+            <TaskForm addTask={addTask} columns={Object.values(columns)} />
+            <DragDropContext onDragEnd={onDragEnd}>
+                <div className="flex justify-center p-8">
+                    {Object.values(columns).map((column) => (
+                        <Column key={column.id} column={column} deleteTask={deleteTask} />
+                    ))}
+                </div>
+            </DragDropContext>
+        </div>
     );
 };
 

@@ -22,6 +22,25 @@ export class TaskController {
             res.status(400).json({ message: err.message });
         }
     }
+    public static async editTask(req: Request, res: Response): Promise<void> {
+        const { id } = req.params;
+        const { content } = req.body;
+        try {
+            const updatedTask = await Task.findByIdAndUpdate(
+                id,
+                { content },
+                { new: true }
+            );
+            if (!updatedTask) {
+                res.status(404).json({ message: 'Task not found' });
+            } else {
+                res.json(updatedTask);
+            }
+        } catch (err: any) {
+            res.status(400).json({ message: err.message });
+        }
+    }
+
 
     public static async updateTask(req: Request, res: Response): Promise<void> {
         const { id } = req.params;

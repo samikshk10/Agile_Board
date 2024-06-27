@@ -12,5 +12,6 @@ export class TaskRouter extends RouterClass {
         this.router.post('/addtask', TaskController.addTask);
         this.router.put('/tasks/:id', TaskController.updateTask);
         this.router.delete('/delete-task/:id', TaskController.deleteTask);
+        this.router.put('/edit-task/:id', TaskController.editTask);
     }
 }

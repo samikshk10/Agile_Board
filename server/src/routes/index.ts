@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { IRouteInterface } from "../interfaces";
 import { TaskRouter } from "./taskRoutes";
+import { ColumnRouter } from "./columnRoutes";
 
 
 class ProxyRouter {
@@ -11,6 +12,11 @@ class ProxyRouter {
             segment: "/tasks",
             provider: TaskRouter,
         },
+
+        {
+            segment: "/columns",
+            provider: ColumnRouter
+        }
     ];
 
     private constructor() { }

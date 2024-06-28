@@ -1,8 +1,10 @@
 import { Request, Response } from 'express';
 import Task from '../models/Task';
+import mongoose from 'mongoose';
 
 export class TaskController {
     public constructor() { }
+
     public static async getTasks(req: Request, res: Response): Promise<void> {
         try {
             const tasks = await Task.find();
@@ -11,12 +13,20 @@ export class TaskController {
             res.status(500).json({ message: err.message });
         }
     }
-
-    public static async addTask(req: Request, res: Response): Promise<void> {
+    public static async addTask(req: Request, res: Response) {
         const { content, columnId } = req.body;
-        const newTask = new Task({ content, columnId });
+
+        console.log(content, columnId);
+
         try {
+            // Validate columnId if necessary
+            if (!mongoose.Types.ObjectId.isValid(columnId)) {
+                throw new Error('Invalid columnId format');
+            }
+
+            const newTask = new Task({ content, columnId });
             const savedTask = await newTask.save();
+            if (savedTask) { console.log("task addedx") };
             res.status(201).json(savedTask);
         } catch (err: any) {
             res.status(400).json({ message: err.message });
@@ -40,7 +50,6 @@ export class TaskController {
             res.status(400).json({ message: err.message });
         }
     }
-
 
     public static async updateTask(req: Request, res: Response): Promise<void> {
         const { id } = req.params;
@@ -67,4 +76,3 @@ export class TaskController {
         }
     }
 }
-

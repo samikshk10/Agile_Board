@@ -9,8 +9,8 @@ export class TaskRouter extends RouterClass {
     define(): void {
 
         this.router.get('/get-task', TaskController.getTasks);
-        this.router.post('/addtask', TaskController.addTask);
-        this.router.put('/tasks/:id', TaskController.updateTask);
+        this.router.post('/add-task', TaskController.addTask);
+        this.router.put('/update-task/:id', TaskController.updateTask);
         this.router.delete('/delete-task/:id', TaskController.deleteTask);
         this.router.put('/edit-task/:id', TaskController.editTask);
     }

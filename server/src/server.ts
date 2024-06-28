@@ -4,6 +4,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import { BASE_URL, MONGODB_URI, port } from './config';
 import { ProxyRouter } from './routes';
+import { Request, Response, NextFunction } from 'express';
 
 // Load environment variables
 dotenv.config();
@@ -26,6 +27,10 @@ class App {
             origin: BASE_URL.url
         }));
         this.app.use(express.json());
+        this.app.get("*", (req: Request, res: Response, next: NextFunction) => {
+            res.send("Bad Request");
+
+        })
         this.app.use("/api", ProxyRouter.map());
     }
 

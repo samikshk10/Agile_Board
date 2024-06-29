@@ -26,6 +26,9 @@ class App {
         this.app.use(cors({
             origin: BASE_URL.url
         }));
+        this.app.get("/", (req: Request, res: Response) => {
+            res.send("Testing");
+        });
         this.app.use(express.json());
         // this.app.get("*", (req: Request, res: Response, next: NextFunction) => {
         //     res.send("Bad Request");

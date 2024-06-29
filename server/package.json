@@ -2,15 +2,21 @@
   "name": "server",
   "version": "1.0.0",
   "description": "",
-  "main": "dist/server.js",
+  "main": "server.js",
   "scripts": {
+    "start": "nodemon src/index.ts",
+    "build": "rimraf dist && tsc",
+    "ts.check": "tsc --project tsconfig.json",
+    "add-build": "git add dist",
+    "test": "echo \"Error: no test specified\" && exit 1",
     "start:watch": "nodemon dist/server.js",
-    "start": "node dist/server.js",
-    "dev": "ts-node src/server.ts",
-    "build:watch": "tsc --watch",
-    "build": "tsc",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build:watch": "tsc --watch"
   },
+  "pre-commit": [
+    "ts.check",
+    "build",
+    "add-build"
+  ],
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -25,6 +31,8 @@
     "typescript": "^5.5.2"
   },
   "devDependencies": {
-    "@types/cors": "^2.8.17"
+    "@types/cors": "^2.8.17",
+    "pre-commit": "^1.2.2",
+    "rimraf": "^5.0.7"
   }
 }

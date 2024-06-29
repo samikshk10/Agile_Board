@@ -27,10 +27,10 @@ class App {
             origin: BASE_URL.url
         }));
         this.app.use(express.json());
-        this.app.get("*", (req: Request, res: Response, next: NextFunction) => {
-            res.send("Bad Request");
+        // this.app.get("*", (req: Request, res: Response, next: NextFunction) => {
+        //     res.send("Bad Request");
 
-        })
+        // })
         this.app.use("/api", ProxyRouter.map());
     }
 

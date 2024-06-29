@@ -19,7 +19,7 @@ const KanbanBoard = () => {
     const fetchColumns = async () => {
         try {
             const response = await axios.get(`${baseUrl}/api/columns/get-column`);
-            const fetchedColumns = response.data.map(column => ({
+            const fetchedColumns = response?.data.map(column => ({
                 ...column,
                 taskData: column.taskData || [] // Ensure taskData is initialized as an array
             }));

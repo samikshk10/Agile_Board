@@ -13,14 +13,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ColumnController = void 0;
-const column_1 = __importDefault(require("../models/column"));
+const Columns_1 = __importDefault(require("../models/Columns"));
 const Task_1 = __importDefault(require("../models/Task"));
 class ColumnController {
     constructor() { }
     static getColumns(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const columns = yield column_1.default.find();
+                const columns = yield Columns_1.default.find();
                 res.json(columns);
             }
             catch (err) {
@@ -32,7 +32,7 @@ class ColumnController {
         return __awaiter(this, void 0, void 0, function* () {
             const { title } = req.body;
             try {
-                const newColumn = new column_1.default({ title });
+                const newColumn = new Columns_1.default({ title });
                 const savedColumn = yield newColumn.save();
                 res.status(201).json(savedColumn);
             }
@@ -46,7 +46,7 @@ class ColumnController {
             const { id } = req.params;
             const { title } = req.body;
             try {
-                const updatedColumn = yield column_1.default.findByIdAndUpdate(id, { title }, { new: true });
+                const updatedColumn = yield Columns_1.default.findByIdAndUpdate(id, { title }, { new: true });
                 if (!updatedColumn) {
                     res.status(404).json({ message: 'Column not found' });
                 }
@@ -63,7 +63,7 @@ class ColumnController {
         return __awaiter(this, void 0, void 0, function* () {
             const { id } = req.params;
             try {
-                const column = yield column_1.default.findByIdAndDelete(id);
+                const column = yield Columns_1.default.findByIdAndDelete(id);
                 if (column) {
                     yield Task_1.default.deleteMany({ columnId: id });
                     res.json({ message: 'Column and related tasks deleted' });

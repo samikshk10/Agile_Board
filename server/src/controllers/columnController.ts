@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import Column from '../models/column';
+import Column from '../models/Columns';
 import Task from '../models/Task';
 
 export class ColumnController {

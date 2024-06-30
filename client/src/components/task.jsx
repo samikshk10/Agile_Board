@@ -77,7 +77,7 @@ const Task = ({ task, index, deleteTask, editTask }) => {
                             </div>
                         </div>
                     ) : (
-                        <div className="flex justify-between items-center ">
+                        <div className="flex justify-between items-center gap-4">
                             <div>
                                 <p>{task.content}</p>
                             </div>

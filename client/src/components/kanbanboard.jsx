@@ -311,7 +311,7 @@ const KanbanBoard = () => {
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div className="max-h-[65vh] overflow-y-auto pb-20">
+                                            <div className="break-all max-h-[65vh] overflow-y-auto pb-20">
                                                 {column.taskData.map((task, index) => (
                                                     <Task
                                                         key={task._id}

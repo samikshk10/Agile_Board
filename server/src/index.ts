@@ -23,9 +23,12 @@ class App {
     }
 
     private middlewares(): void {
-        this.app.use(cors({
-            origin: BASE_URL.url
-        }));
+        var corsOptions = {
+            origin: BASE_URL.url,
+            optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+        }
+
+        this.app.use(cors(corsOptions));
         this.app.get("/", (req: Request, res: Response) => {
             res.send("Testing");
         });
